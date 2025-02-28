@@ -1,0 +1,12 @@
+* {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  scroll-behavior: smooth;
+  transition: all 0.05s ease-in-out;
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+}
