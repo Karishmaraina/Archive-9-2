@@ -18,9 +18,22 @@ const Header = ({
   return (
     <div className="bg-gray-100 p-2 flex justify-between items-center relative">
       <div className="flex items-center gap-2 cursor-pointer p-2 rounded-md">
-        <div className="relative flex items-center justify-center w-[40px] h-[40px] bg-[#eeeeee] rounded-full">
-          {getNameInitials(currentConvo?.name)}
+        {/* Profile Picture with Default Fallback */}
+        <div className="relative flex items-center justify-center w-[40px] h-[40px] bg-[#eeeeee] rounded-full overflow-hidden">
+          {currentConvo?.profilePicture ? (
+            <img
+              src={currentConvo.profilePicture.startsWith("http") ? currentConvo.profilePicture :`http://localhost:5000${currentConvo.profilePicture}`}
+              alt="Profile"
+              className="w-full h-full object-cover"
+              onError={(e) => (e.currentTarget.src = "https://via.placeholder.com/40")}
+              />
+          ) : (
+            <span className="text-lg font-semibold text-gray-800">
+              {getNameInitials(currentConvo?.name)}
+              </span>
+          )}
         </div>
+        {/*Chat Users name*/}
         <div>
           <h1 className="text-base font-normal text-slate-900">
             {currentConvo?.name}
@@ -34,6 +47,7 @@ const Header = ({
           )}
         </div>
       </div>
+      {/* Search and Menu Options */}
       <div className="flex items-center gap-3">
         <div
           className="flex"

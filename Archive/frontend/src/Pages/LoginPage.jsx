@@ -18,7 +18,8 @@ const LoginPage = () => {
       });
 
       // Store ONLY the token (not userId)
-      sessionStorage.setItem("token", res.data.token); // Or use cookies
+      // sessionStorage.setItem("token", res.data.token); // Or use cookies
+      localStorage.setItem("token", res.data.token); // Store token in localStorage
       localStorage.setItem("user", res.data?.user?._id);
       localStorage.setItem("userName", res.data?.user?.name);
       console.log(res.data);

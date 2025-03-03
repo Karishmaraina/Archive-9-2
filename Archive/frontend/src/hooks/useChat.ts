@@ -15,6 +15,8 @@ import { Conversation } from "../../../types";
 
 const socket = io("http://localhost:5000");
 
+const API_URL = "http://localhost:5000/api";
+
 const useChat = () => {
   const [conversations, setConversations] = useState([]);
   const [messages, setMessages] = useState([]);
@@ -97,7 +99,34 @@ const useChat = () => {
     }
   }, [current?.id]);
 
-  const handleSendMessage = async (msg) => {
+  const handleSendMessage = async (msg, file = null) => {
+    let fileUrl = null;
+  
+    if (file) {
+      const formData = new FormData();
+      formData.append("file", file);
+  
+      try {
+        const uploadResponse = await fetch(`${API_URL}/upload`, {
+          method: "POST",
+          body: formData,
+        });
+  
+        const uploadData = await uploadResponse.json();
+        
+        if (uploadData.url) {
+          fileUrl = uploadData.url;
+        } else {
+          console.error("File upload failed", uploadData.error);
+          return;
+        }
+  
+      } catch (error) {
+        console.error("File upload error:", error);
+        return;
+      }
+    }
+  
     const payload = {
       sender: localStorage.getItem("user"),
       receiverIds: current?.isGroup
@@ -106,13 +135,14 @@ const useChat = () => {
             .filter((id) => id !== localStorage.getItem("user"))
         : [current?.otherUser?._id],
       text: msg.text,
-      group: current?.group ? current?.group : null,
+      fileUrl: fileUrl, 
+      group: current?.isgroup ? current?.id : null,
     };
-
+  
     await sendMessage(payload);
     setToggle((prev) => !prev);
   };
-
+  
   const addClientSideConversation = (id, name) => {
     const temp = {
       id: id,

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { fetchConversations } from "../../../../api/conversation"; // Import API function
+import { fetchConversations } from "../../../../api/conversation";
 import { fetchFilteredChats } from "../../../../api/conversation";
 import { BiSolidMessageSquareAdd } from "react-icons/bi";
 import { MdGroupAdd, MdArrowBack } from "react-icons/md";
@@ -7,38 +7,123 @@ import { FaUserCircle } from "react-icons/fa";
 import Conversations from "./Conversations";
 import AllUsers from "./AllUsers";
 import Group from "./Group";
-import { io } from "socket.io-client";
 
-const Sidebar = ({
-  setCurrentConvo,
-  conversations,
-  handleGroupCreatedByUser,
-}) => {
+const Sidebar = ({ setCurrentConvo, conversations, handleGroupCreatedByUser }) => {
   const [mode, setMode] = useState("chats");
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState("all");
   const [hover, setHover] = useState(false);
+  const [showOptions, setShowOptions] = useState(false);
+
+  const [profilePic, setProfilePic] = useState(localStorage.getItem("profilePic") || "");
+
+  useEffect(() => {
+    setProfilePic(localStorage.getItem("profilePic") || "");
+  }, []);
+
 
   // Function to toggle between "New Chat" and "New Group"
   const handleNewChatClick = () => {
     setMode(mode === "chats" ? "users" : "group");
   };
 
+  //Function to handle file selection and upload
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("profilePicture", file);
+
+    const token = localStorage.getItem("token");
+    if(!token) {
+      console.error("No token found in localStorage");
+      return;
+    }
+
+    try{
+      const response = await fetch("http://localhost:5000/api/users/upload-profile", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          // Authorization: `Bearer ${localStorage.getItem("token")}`, //send token
+        },
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if(response.ok) {
+        const fullImageUrl = `http://localhost:5000${data.user.profilePicture}`; // Fix URL
+
+        setProfilePic(fullImageUrl);
+        localStorage.setItem("profilePic", fullImageUrl);
+        alert("Profile picture updated successfully");
+      } else {
+        alert(data.error || "Failed to update profile picture");
+      }
+    } catch (error) {
+      console.error("Upload Error: ", error);
+    }
+  };
+
+
+
+  //     if (response.ok) {
+  //       setProfilePic(data.user.profilePicture);
+  //       localStorage.setItem("profilePic", data.user.profilePicture);
+  //       alert("Profile picture updated successfully");
+  //     } else {
+  //       alert(data.error || "Failed to update profile picture");
+  //     }
+  //   } catch (error) {
+  //     console.error("Upload Error: ", error);
+  //   }
+  // };
+
+
   return (
     <div className="w-[45%] max-w-[800px] h-full bg-white py-2 px-3 relative flex flex-col">
       {/* Header Section (User Avatar & Floating Button) */}
-      <div className="flex justify-between items-center mb-3">
-        {/* User Avatar */}
-        <div className="flex items-center space-x-2">
-          <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-white text-lg">
-            {localStorage.getItem("userName")?.charAt(0).toUpperCase() || (
-              <FaUserCircle size={30} />
+      <div className="flex justify-between items-center mb-3 relative">
+        {/* User Avatar & Name (Clickable) */}
+        <div
+          className="flex items-center space-x-2 cursor-pointer"
+          onClick={() => setShowOptions(!showOptions)}
+        >
+           {/* Display Profile Picture or Default Icon */}
+           <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-300 flex items-center justify-center">
+           {profilePic ? (
+              <img
+                src={profilePic}
+                alt="Profile"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <FaUserCircle size={30} className="text-white" />
             )}
           </div>
-          <span className="text-gray-700 font-medium">
-            {localStorage.getItem("userName")}
-          </span>
+
+          {/* Display User Name */}
+          <span className="text-gray-700 font-medium">{localStorage.getItem("userName")}</span>
         </div>
+
+        {/* Profile Options (Dropdown) */}
+        {showOptions && (
+          <div className="absolute top-12 left-0 bg-white shadow-md rounded-md w-40 p-2">
+            <label 
+            htmlFor= "fileInput" className="w-full text-left p-2 hover:bg-gray-100 cursor-pointer">
+              Change Profile Picture
+            </label>
+            <input
+              type="file"
+              id="fileInput"
+              className="hidden"
+              accept="image/*"
+              onChange={handleFileChange}
+              />
+          </div>
+        )}
 
         {/* Floating Icon (New Chat / New Group) */}
         {mode !== "group" && (
@@ -48,11 +133,7 @@ const Sidebar = ({
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
           >
-            {mode === "chats" ? (
-              <BiSolidMessageSquareAdd size={22} />
-            ) : (
-              <MdGroupAdd size={24} />
-            )}
+            {mode === "chats" ? <BiSolidMessageSquareAdd size={22} /> : <MdGroupAdd size={24} />}
             {hover && (
               <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded-md">
                 {mode === "chats" ? "New Chat" : "New Group"}
@@ -86,11 +167,7 @@ const Sidebar = ({
                 }`}
                 onClick={() => setFilter(type)}
               >
-                {type === "all"
-                  ? "All Chats"
-                  : type === "unread"
-                  ? "Unread"
-                  : "Groups"}
+                {type === "all" ? "All Chats" : type === "unread" ? "Unread" : "Groups"}
               </button>
             ))}
           </div>

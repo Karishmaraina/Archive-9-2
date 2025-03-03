@@ -62,7 +62,20 @@ const Group = ({ goBack, handleGroupCreated }) => {
       try {
         const data = await getAllUsers();
         const currentUserId = localStorage.getItem("user") || "";
-        setUsers(data.filter((user) => user._id !== currentUserId));
+
+        // Ensure profilePicture is formatted correctly
+        const formattedUsers = data
+          .filter((user) => user._id !== currentUserId)
+          .map((user) => ({
+            ...user,
+            profilePicture: user.profilePicture
+            ? `http://localhost:5000${user.profilePicture}`
+            : null, // Handle missing profile pictures
+
+            
+          }));
+
+        setUsers(formattedUsers);
       } catch (error) {
         console.error("Failed to fetch users:", error);
       } finally {

@@ -9,6 +9,7 @@ const Conversations = ({ conversations, selectConvo, filter, searchQuery }) => {
     isGroup,
     members,
     unreadCount,
+    profilePicture
   }) => {
     return (
       <div

@@ -12,6 +12,7 @@ import authRoutes from "./routes/auth.route.js";
 import userRoutes from "./routes/user.route.js";
 import groupRoutes from "./routes/group.route.js";
 import conversationRoutes from "./routes/conversation.route.js";
+// import { v2 as cloudinary } from "cloudinary";
 
 dotenv.config();
 
@@ -25,10 +26,14 @@ const io = new Server(server, {
 });
 
 app.use(express.json());
+// app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 const PORT = process.env.PORT || 5000;
 const __dirname = path.resolve();
+
+// Serve static profile images
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // File upload setup
 const storage = multer.diskStorage({
@@ -44,9 +49,12 @@ app.post("/upload", upload.single("file"), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: "No file uploaded" });
   }
+  const fileUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
   res.json({
     filename: req.file.filename,
     path: path.join("uploads", req.file.filename),
+    success: true,
+    url: fileUrl,
   });
 });
 

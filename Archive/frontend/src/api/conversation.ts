@@ -102,14 +102,14 @@ export const fetchFilteredChats = async (
 // //   }))
 // // );
 
-export const sendMessage = async ({ sender, receiverIds, text, group }) => {
+export const sendMessage = async ({ sender, receiverIds, text, fileUrl, group }) => {
   try {
     const response = await fetch(`${API_URL}/conversations/send-message`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ sender, receiverIds, text, group }),
+      body: JSON.stringify({ sender, receiverIds, text, file: fileUrl, group }),
     });
 
     if (!response.ok) {

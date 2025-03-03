@@ -1,23 +1,30 @@
 const ChatMessages = ({ messages }) => {
-    return (
-      <div className="chat-messages">
-        {messages.map((msg, index) => (
-          <div key={index} className="message">
-            <p>{msg.text}</p>
-            {msg.file && (
-              <div>
-                {msg.file.endsWith(".jpeg") || msg.file.endsWith(".jpg") || msg.file.endsWith(".png") ? (
-                  <img src={`http://localhost:5000${msg.file}`} alt="Attachment" className="chat-image" />
+  return (
+    <div className="chat-messages">
+      {messages.map((msg, index) => {
+        const fileUrl = msg.fileUrl ? msg.fileUrl : null;
+        const isImage = fileUrl?.toLowerCase().endsWith(".jpeg") || 
+                        fileUrl?.toLowerCase().endsWith(".jpg") || 
+                        fileUrl?.toLowerCase().endsWith(".png");
+
+        return (
+          <div key={msg._id || index} className="message">
+            <p className="message-content">{msg.text}</p>
+
+            {fileUrl && (
+              <div className="file-attachment">
+                {isImage ? (
+                  <img src={fileUrl} alt="Attachment" className="chat-image" />
                 ) : (
-                  <a href={`http://localhost:5000${msg.file}`} download>
-                    Download {msg.file.split("/").pop()}
+                  <a href={fileUrl} download className="download-link">
+                    Download {fileUrl.split("/").pop()}
                   </a>
                 )}
               </div>
             )}
           </div>
-        ))}
-      </div>
-    );
-  };
-  
+        );
+      })}
+    </div>
+  );
+};
