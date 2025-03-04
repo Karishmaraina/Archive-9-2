@@ -136,7 +136,7 @@ const useChat = () => {
         : [current?.otherUser?._id],
       text: msg.text,
       fileUrl: fileUrl, 
-      group: current?.isgroup ? current?.id : null,
+      group: current?.group ? current?.group : null,
     };
   
     await sendMessage(payload);

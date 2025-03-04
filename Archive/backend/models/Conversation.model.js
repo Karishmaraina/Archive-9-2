@@ -19,6 +19,7 @@ const conversationSchema = new mongoose.Schema(
       default: null,
     },
     messages: [messageSchema],
+    profilePicture: String,
   },
   { timestamps: true }
 );

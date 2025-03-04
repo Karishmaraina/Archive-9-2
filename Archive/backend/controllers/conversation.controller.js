@@ -1,7 +1,7 @@
 import Conversation from "../models/Conversation.model.js";
 import { handleUpdateUserRT, io } from "../server.js"; // Import socket instance
 
-// ✅ Send Message
+//  Send Message
 export const sendMessage = async (req, res) => {
   try {
     const { sender, receiverIds, text, group } = req.body;

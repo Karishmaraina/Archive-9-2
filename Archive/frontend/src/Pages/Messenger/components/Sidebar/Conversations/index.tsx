@@ -17,7 +17,15 @@ const Conversations = ({ conversations, selectConvo, filter, searchQuery }) => {
         onClick={() => selectConvo({ isGroup, id: id, title, members })}
       >
         <div className="flex justify-center items-center bg-[#eeeeee] w-[40px] h-[40px] rounded-full relative">
-          {getNameInitials(title)}
+          {profilePicture ? (
+            <img
+            src={profilePicture}
+            alt="Profile"
+            className="w-full h-full object-cover"
+            />
+          ) : (
+            <span className="text-sm font-semibold">{getNameInitials(title)}</span>
+            )}
           <span className="bg-green-500 inline-block w-[10px] h-[10px] rounded-xl absolute bottom-[1px] right-[1px] border-[1px] border-white"></span>
         </div>
         <div className="flex justify-between items-center flex-grow">
@@ -94,6 +102,7 @@ const Conversations = ({ conversations, selectConvo, filter, searchQuery }) => {
               isGroup={convo.isGroup}
               members={convo.members}
               unreadCount={convo.unReadCount}
+              profilePicture={convo.profilePicture} // Add this
             />
           ))
         )}

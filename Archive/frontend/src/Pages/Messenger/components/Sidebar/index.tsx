@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { fetchConversations } from "../../../../api/conversation";
 import { fetchFilteredChats } from "../../../../api/conversation";
 import { BiSolidMessageSquareAdd } from "react-icons/bi";
@@ -14,12 +14,23 @@ const Sidebar = ({ setCurrentConvo, conversations, handleGroupCreatedByUser }) =
   const [filter, setFilter] = useState("all");
   const [hover, setHover] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
-
   const [profilePic, setProfilePic] = useState(localStorage.getItem("profilePic") || "");
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     setProfilePic(localStorage.getItem("profilePic") || "");
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowOptions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
 
 
   // Function to toggle between "New Chat" and "New Group"
@@ -90,6 +101,7 @@ const Sidebar = ({ setCurrentConvo, conversations, handleGroupCreatedByUser }) =
         <div
           className="flex items-center space-x-2 cursor-pointer"
           onClick={() => setShowOptions(!showOptions)}
+          ref={dropdownRef}
         >
            {/* Display Profile Picture or Default Icon */}
            <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-300 flex items-center justify-center">
