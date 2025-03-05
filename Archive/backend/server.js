@@ -34,6 +34,9 @@ const __dirname = path.resolve();
 
 // Serve static profile images
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/uploads", express.static("uploads"));
+
+
 
 // File upload setup
 const storage = multer.diskStorage({

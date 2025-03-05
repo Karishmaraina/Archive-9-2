@@ -15,7 +15,9 @@ const Sidebar = ({ setCurrentConvo, conversations, handleGroupCreatedByUser }) =
   const [hover, setHover] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [profilePic, setProfilePic] = useState(localStorage.getItem("profilePic") || "");
+  const fileInputRef = useRef(null);
   const dropdownRef = useRef(null);
+
 
   useEffect(() => {
     setProfilePic(localStorage.getItem("profilePic") || "");
@@ -29,7 +31,16 @@ const Sidebar = ({ setCurrentConvo, conversations, handleGroupCreatedByUser }) =
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [dropdownRef]);
+
+
+  // useEffect(() => {
+  //   const storedPic = localStorage.getItem("profilePic");
+  //   if (storedPic) {
+  //     setProfilePic(storedPic);
+  //   }
+  // }, []);
+  
 
 
 
@@ -65,7 +76,12 @@ const Sidebar = ({ setCurrentConvo, conversations, handleGroupCreatedByUser }) =
       const data = await response.json();
 
       if(response.ok) {
-        const fullImageUrl = `http://localhost:5000${data.user.profilePicture}`; // Fix URL
+        const fullImageUrl = data.user.profilePicture.startsWith("http")
+        ? data.user.profilePicture
+        : `http://localhost:5000${data.user.profilePicture}`;
+
+        // const fullImageUrl = `http://localhost:5000${data.user.profilePicture}`; // Fix URL
+
 
         setProfilePic(fullImageUrl);
         localStorage.setItem("profilePic", fullImageUrl);
@@ -101,13 +117,13 @@ const Sidebar = ({ setCurrentConvo, conversations, handleGroupCreatedByUser }) =
         <div
           className="flex items-center space-x-2 cursor-pointer"
           onClick={() => setShowOptions(!showOptions)}
-          ref={dropdownRef}
+          
         >
            {/* Display Profile Picture or Default Icon */}
            <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-300 flex items-center justify-center">
-           {profilePic ? (
+           {localStorage.getItem("profilePic") ? (
               <img
-                src={profilePic}
+                src={localStorage.getItem("profilePic")}
                 alt="Profile"
                 className="w-full h-full object-cover"
               />
@@ -122,18 +138,32 @@ const Sidebar = ({ setCurrentConvo, conversations, handleGroupCreatedByUser }) =
 
         {/* Profile Options (Dropdown) */}
         {showOptions && (
-          <div className="absolute top-12 left-0 bg-white shadow-md rounded-md w-40 p-2">
-            <label 
-            htmlFor= "fileInput" className="w-full text-left p-2 hover:bg-gray-100 cursor-pointer">
+          <div className="absolute top-12 left-0 bg-white shadow-md rounded-md w-40 p-2"
+          ref={dropdownRef}
+          >
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                console.log("Button clicked!"); // Debugging log
+                if (fileInputRef.current) {
+                  console.log("Triggering file input..."); // Confirm ref exists
+                  fileInputRef.current.click();
+                } else {
+                  console.log("fileInputRef is NULL!");
+                }
+              }}
+              className="w-full text-left p-2 hover:bg-gray-100 cursor-pointer"
+            >
               Change Profile Picture
-            </label>
+            </button>
+
             <input
               type="file"
-              id="fileInput"
+              ref={fileInputRef}
               className="hidden"
               accept="image/*"
               onChange={handleFileChange}
-              />
+            />
           </div>
         )}
 

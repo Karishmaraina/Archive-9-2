@@ -67,8 +67,10 @@ export const getAllUsers = async (req, res) => {
 
 
 
+
 export const uploadProfilePicture = async (req, res) => {
   try {
+    console.log("Authenticated User:", req.user); // Add this
     const userId = req.user?._id; // Get user ID from authMiddleware
     if (!userId) return res.status(401).json({ error: "Unauthorized: User ID not found" });
 
@@ -90,3 +92,4 @@ export const uploadProfilePicture = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+

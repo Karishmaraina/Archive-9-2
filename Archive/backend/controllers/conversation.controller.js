@@ -39,7 +39,7 @@ export const sendMessage = async (req, res) => {
   }
 };
 
-// ✅ Get All Conversations of a User
+//  Get All Conversations of a User
 export const getAllConversations = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -116,7 +116,7 @@ export const getAllConversations = async (req, res) => {
   }
 };
 
-// ✅ Get All Messages of a Conversation
+//  Get All Messages of a Conversation
 export const getMessages = async (req, res) => {
   try {
     const { conversationId } = req.params;
@@ -133,7 +133,7 @@ export const getMessages = async (req, res) => {
   }
 };
 
-// ✅ Read Conversation
+//  Read Conversation
 export const readConversation = async (req, res) => {
   try {
     const { conversationId } = req.params;

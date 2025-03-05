@@ -18,3 +18,5 @@ router.get("/", getAllUsers);
 router.post("/upload-profile", authMiddleware, upload.single("profilePicture"), uploadProfilePicture);
 
 export default router;
+
+
