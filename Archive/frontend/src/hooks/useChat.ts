@@ -99,7 +99,7 @@ const useChat = () => {
     }
   }, [current?.id]);
 
-  const handleSendMessage = async (msg, file = null) => {
+  const handleSendMessage = async (msgText: string, file: File | null = null) => {
     let fileUrl = null;
   
     if (file) {
@@ -113,13 +113,14 @@ const useChat = () => {
         });
   
         const uploadData = await uploadResponse.json();
+        fileUrl = uploadData.url;
         
-        if (uploadData.url) {
-          fileUrl = uploadData.url;
-        } else {
-          console.error("File upload failed", uploadData.error);
-          return;
-        }
+        // if (uploadData.url) {
+        //   fileUrl = uploadData.url;
+        // } else {
+        //   console.error("File upload failed", uploadData.error);
+        //   return;
+        // }
   
       } catch (error) {
         console.error("File upload error:", error);
@@ -134,7 +135,7 @@ const useChat = () => {
             .map((member) => member._id)
             .filter((id) => id !== localStorage.getItem("user"))
         : [current?.otherUser?._id],
-      text: msg.text,
+      text: msgText || "",
       fileUrl: fileUrl, 
       group: current?.group ? current?.group : null,
     };

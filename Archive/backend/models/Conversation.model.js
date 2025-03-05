@@ -6,8 +6,9 @@ const messageSchema = new mongoose.Schema({
     { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   ],
   reads: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-  text: { type: String, required: true },
+  text: { type: String, default: "", required: false},
   timestamp: { type: Date, default: Date.now },
+  fileUrl: { type: String, required: false },
 });
 
 const conversationSchema = new mongoose.Schema(

@@ -27,7 +27,10 @@ const io = new Server(server, {
 
 app.use(express.json());
 // app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],}));
 
 const PORT = process.env.PORT || 5000;
 const __dirname = path.resolve();
@@ -48,17 +51,25 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // File upload route
-app.post("/upload", upload.single("file"), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ error: "No file uploaded" });
-  }
+// app.post("/upload", upload.single("file"), (req, res) => {
+//   if (!req.file) {
+//     return res.status(400).json({ error: "No file uploaded" });
+//   }
+//   const fileUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
+//   res.json({
+//     filename: req.file.filename,
+//     path: path.join("uploads", req.file.filename),
+//     success: true,
+//     url: fileUrl,
+//   });
+// });
+
+// server.js
+app.post("/api/upload", upload.single("file"), (req, res) => {
+  if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+  
   const fileUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
-  res.json({
-    filename: req.file.filename,
-    path: path.join("uploads", req.file.filename),
-    success: true,
-    url: fileUrl,
-  });
+  res.json({ url: fileUrl }); // Ensure response contains 'url' property
 });
 
 // File download route

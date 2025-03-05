@@ -60,7 +60,7 @@ const Footer = ({ sendMessage }) => {
     if (!text.trim() && !file) return;
 
     try {
-      await sendMessage({ text, file });
+      await sendMessage(text, file );
       setText("");
       handleRemoveFile();
     } catch (error) {
@@ -124,6 +124,7 @@ const Footer = ({ sendMessage }) => {
             type="file"
             className="hidden"
             accept=".jpeg,.jpg,.png,.pdf,.docx,.xls"
+            multiple
             onChange={handleFileChange}
           />
         </div>
