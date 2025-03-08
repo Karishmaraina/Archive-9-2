@@ -1,3 +1,12 @@
+"CHATBOX-Chat Application"
+
+->Developed a chat app with real-time messaging using WebSockets, chat filters (all, unread, groups), and a responsive UI.
+
+->Implemented search functionality, profile pictures, media attachments, chat management (clear & delete), and detailed sections for individual/group chats.
+
+->Technologies Used: MERN Stack
+
+
 ![Screenshot 2025-03-03 162903](https://github.com/user-attachments/assets/7db0970f-2647-4d4a-b524-5a5d584f2689)
 ![Screenshot 2025-03-03 162916](https://github.com/user-attachments/assets/13835fc8-75b7-4cc0-8749-112b62a14445)
 ![Screenshot 2025-03-03 162926](https://github.com/user-attachments/assets/ff7ad1f1-c332-45f2-9af8-388f5f2207c8)
